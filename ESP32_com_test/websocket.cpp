@@ -93,6 +93,7 @@ bool websocket_init(void)
 
 	client.onMessage(onMessageCallback);
 	client.onEvent(onEventsCallback);
+	// TODO: figure out why this causes a 'bad certificate' error
 	//client.setCACert(echo_org_ssl_ca_cert);
 	client.setInsecure();
 	connected = client.connect(websockets_connection_string);
@@ -101,6 +102,7 @@ bool websocket_init(void)
 		Serial.println("Connected!");
 		//client.send("Hello to Server from the other side...");
 		//client.ping();
+		client.close(CloseReason_GoingAway);
 	}
 	else
 	{
@@ -109,3 +111,29 @@ bool websocket_init(void)
 
 	return connected;
 }
+
+int websocket_send(message_t *msg)
+{
+	if (msg == NULL)
+	{
+		return -1;
+	}
+	if (!client.connect(websockets_connection_string))
+	{
+		return -2;
+	}
+	// Should be void * but it throws an error
+	if (!client.sendBinary((char *) msg, sizeof(message_t)))
+	{
+		client.close(CloseReason_AbnormalClosure);
+		return -3;
+	}
+	client.close(CloseReason_GoingAway);
+
+	return 0;
+}
+
+//Cheatsheat
+//bool WebsocketsClient::sendBinary(const char* data, const size_t len)
+//WebsocketsMessage WebsocketsClient::readNonBlocking()
+//void WebsocketsClient::close(const CloseReason reason)
