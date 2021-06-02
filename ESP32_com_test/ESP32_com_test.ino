@@ -23,7 +23,7 @@ void loop(void)
 
 void test(void)
 {
-	char message[] = "kurche";
+	char message[] = "kurcheee";
 
 	websocket_send((message_t *) message);
 }
