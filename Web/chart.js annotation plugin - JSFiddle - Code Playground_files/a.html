@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="edit-Type" edit="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>chart.js annotation plugin - JSFiddle</title>
+
+      <meta name="robots" content="index, follow">
+      <meta name="googlebot" content="index, follow">
+
+      <script type="text/javascript">
+        var height
+        var force_height = null
+        var slug = "3qkcLk6v"
+        var show_src = "//fiddle.jshell.net/beaver71/3qkcLk6v/show/light/"
+        var resize_element_counter = 0
+        var shell_edit_url = "/beaver71/3qkcLk6v/light/"
+
+      </script>
+
+      <script src="a_data/highlight.js"></script>
+      <script src="a_data/embed.js"></script>
+      <link rel="stylesheet" media="screen" href="a_data/embed-light.css">
+
+    <style type="text/css" media="screen">
+    /* */</style>
+
+  </head>
+  <body>
+    <div id="full-embed">
+        <header>
+          <h1>
+            <a href="https://jsfiddle.net/beaver71/3qkcLk6v/" target="_blank">
+              <svg width="34" height="40">
+      <use xlink:href="//jsfiddle.net/sprite.svg#logo"></use>
+    </svg>Edit in JSFiddle
+            </a>
+          </h1>
+          <div id="actions">
+            <ul class="normalRes">
+                <li class="active">
+                  <a data-trigger-type="js" href="#JavaScript">JavaScript</a>
+                </li>
+                <li class="">
+                  <a data-trigger-type="html" href="#HTML">HTML</a>
+                </li>
+                <li class="">
+                  <a data-trigger-type="css" href="#CSS">CSS</a>
+                </li>
+                <li class="">
+                  <a data-trigger-type="result" href="#Result">Result</a>
+                </li>
+                <li class="">
+                  <a data-trigger-type="resources" href="#Resources">Resources</a>
+                </li>
+            </ul>
+            <div class="hl animated" style="left: 0px; width: 84.7833px;"></div>
+          </div>
+        </header>
+
+        <div id="tabs">
+              <pre class="tCont JavaScript hljs active"><span class="hljs-keyword">var</span> marketing = [<span class="hljs-string">'2017-08-05'</span>, <span class="hljs-string">'2017-08-12'</span>];
+<span class="hljs-keyword">var</span> amount = [<span class="hljs-number">50</span>, <span class="hljs-number">70</span>];
+<span class="hljs-comment">// populate 'annotations' array dynamically based on 'marketing'</span>
+<span class="hljs-keyword">var</span> annotations = marketing.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">date, index</span>) </span>{
+   <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">type</span>: <span class="hljs-string">'line'</span>,
+      <span class="hljs-attr">id</span>: <span class="hljs-string">'vline'</span> + index,
+      <span class="hljs-attr">mode</span>: <span class="hljs-string">'vertical'</span>,
+      <span class="hljs-attr">scaleID</span>: <span class="hljs-string">'x-axis-0'</span>,
+      <span class="hljs-attr">value</span>: date,
+      <span class="hljs-attr">borderColor</span>: <span class="hljs-string">'green'</span>,
+      <span class="hljs-attr">borderWidth</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">label</span>: {
+         <span class="hljs-attr">enabled</span>: <span class="hljs-literal">true</span>,
+         <span class="hljs-attr">position</span>: <span class="hljs-string">"center"</span>,
+         <span class="hljs-attr">content</span>: amount[index]
+      }
+   }
+});
+
+<span class="hljs-keyword">var</span> chart = <span class="hljs-keyword">new</span> Chart(ctx, {
+   <span class="hljs-attr">type</span>: <span class="hljs-string">'line'</span>,
+   <span class="hljs-attr">data</span>: {
+      <span class="hljs-attr">labels</span>: [<span class="hljs-string">'2017-08-02'</span>, <span class="hljs-string">'2017-08-05'</span>, <span class="hljs-string">'2017-08-09'</span>, <span class="hljs-string">'2017-08-12'</span>, <span class="hljs-string">'2017-08-14'</span>],
+      <span class="hljs-attr">datasets</span>: [{
+         <span class="hljs-attr">label</span>: <span class="hljs-string">'LINE'</span>,
+         <span class="hljs-attr">data</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">5</span>],
+         <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'rgba(0, 119, 290, 0.2)'</span>,
+         <span class="hljs-attr">borderColor</span>: <span class="hljs-string">'rgba(0, 119, 290, 0.6)'</span>
+      }]
+   },
+   <span class="hljs-attr">options</span>: {
+      <span class="hljs-attr">scales</span>: {
+         <span class="hljs-attr">yAxes</span>: [{
+            <span class="hljs-attr">ticks</span>: {
+               <span class="hljs-attr">beginAtZero</span>: <span class="hljs-literal">true</span>
+            }
+         }]
+      },
+      <span class="hljs-attr">annotation</span>: {
+         <span class="hljs-attr">drawTime</span>: <span class="hljs-string">'afterDatasetsDraw'</span>,
+         <span class="hljs-attr">annotations</span>: annotations
+      }
+   }
+});
+</pre>
+              <pre class="tCont HTML hljs"><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"ctx"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+</pre>
+              <pre class="tCont CSS hljs"></pre>
+              <div class="tCont result" id="result">
+              <iframe src="a_data/a.html" sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation-by-user-activation allow-downloads allow-modals allow-popups" allow="midi; geolocation; microphone; camera; display-capture; encrypted-media;" frameborder="0"></iframe></div>
+              <div class="tCont resources" id="resources">
+                <h3>External resources loaded into this fiddle:</h3>
+                <ul>
+                    <li><a href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js" target="_blank">Chart.min.js</a></li>
+                    <li><a href="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.5/chartjs-plugin-annotation.min.js" target="_blank">chartjs-plugin-annotation.min.js</a></li>
+                </ul>
+              </div>
+        </div>
+    </div>
+    
+  
+
+</body></html>

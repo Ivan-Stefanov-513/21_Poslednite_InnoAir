@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>chart.js annotation plugin</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script type="text/javascript" src="a_data_002/dummy.js"></script>
+    <link rel="stylesheet" type="text/css" href="a_data_002/normalize.css">
+
+    <link rel="stylesheet" type="text/css" href="a_data_002/result-light.css">
+
+      <script type="text/javascript" src="a_data_002/Chart.js"></script><style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style>
+      <script type="text/javascript" src="a_data_002/chartjs-plugin-annotation.js"></script>
+
+  <style id="compiled-css" type="text/css">
+      
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+    <script src="a_data_002/stringify.js" charset="utf-8"></script>
+    <script>
+      const customConsole = (w) => {
+        const pushToConsole = (payload, type) => {
+          w.parent.postMessage({
+            console: {
+              payload: stringify(payload),
+              type:    type
+            }
+          }, "*")
+        }
+
+        w.onerror = (message, url, line, column) => {
+          // the line needs to correspond with the editor panel
+          // unfortunately this number needs to be altered every time this view is changed
+          line = line - 70
+          if (line < 0){
+            pushToConsole(message, "error")
+          } else {
+            pushToConsole(`[${line}:${column}] ${message}`, "error")
+          }
+        }
+
+        let console = (function(systemConsole){
+          return {
+            log: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "log")
+              systemConsole.log.apply(this, args)
+            },
+            info: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "info")
+              systemConsole.info.apply(this, args)
+            },
+            warn: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "warn")
+              systemConsole.warn.apply(this, args)
+            },
+            error: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "error")
+              systemConsole.error.apply(this, args)
+            },
+            system: function(arg){
+              pushToConsole(arg, "system")
+            },
+            clear: function(){
+              systemConsole.clear.apply(this, {})
+            },
+            time: function(){
+              let args = Array.from(arguments)
+              systemConsole.time.apply(this, args)
+            },
+            assert: function(assertion, label){
+              if (!assertion){
+                pushToConsole(label, "log")
+              }
+
+              let args = Array.from(arguments)
+              systemConsole.assert.apply(this, args)
+            }
+          }
+        }(window.console))
+
+        window.console = { ...window.console, ...console }
+
+        console.system("Running fiddle")
+      }
+
+      if (window.parent){
+        customConsole(window)
+      }
+    </script>
+</head>
+<body><div style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+    <canvas id="ctx" style="display: block; width: 566px; height: 283px;" class="chartjs-render-monitor" width="566" height="283"></canvas>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+var marketing = ['2017-08-05', '2017-08-12'];
+var amount = [50, 70];
+// populate 'annotations' array dynamically based on 'marketing'
+var annotations = marketing.map(function(date, index) {
+   return {
+      type: 'line',
+      id: 'vline' + index,
+      mode: 'vertical',
+      scaleID: 'x-axis-0',
+      value: date,
+      borderColor: 'green',
+      borderWidth: 1,
+      label: {
+         enabled: true,
+         position: "center",
+         content: amount[index]
+      }
+   }
+});
+
+var chart = new Chart(ctx, {
+   type: 'line',
+   data: {
+      labels: ['2017-08-02', '2017-08-05', '2017-08-09', '2017-08-12', '2017-08-14'],
+      datasets: [{
+         label: 'LINE',
+         data: [3, 1, 4, 2, 5],
+         backgroundColor: 'rgba(0, 119, 290, 0.2)',
+         borderColor: 'rgba(0, 119, 290, 0.6)'
+      }]
+   },
+   options: {
+      scales: {
+         yAxes: [{
+            ticks: {
+               beginAtZero: true
+            }
+         }]
+      },
+      annotation: {
+         drawTime: 'afterDatasetsDraw',
+         annotations: annotations
+      }
+   }
+});
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "3qkcLk6v"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+    <script>
+      let allLines = []
+
+      window.addEventListener("message", (message) => {
+        if (message.data.console){
+          let insert = document.querySelector("#insert")
+          allLines.push(message.data.console.payload)
+          insert.innerHTML = allLines.join(";\r")
+
+          let result = eval.call(null, message.data.console.payload)
+          if (result !== undefined){
+            console.log(result)
+          }
+        }
+      })
+    </script>
+
+
+
+</body></html>
