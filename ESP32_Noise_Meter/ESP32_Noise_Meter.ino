@@ -2,14 +2,17 @@
 uint8_t debug = 0;
 
 #define Mic_Pin 35
+#define SAMPLES 10
+
+bool refresh = false;
 
 uint16_t mic_sample = 0;
 uint16_t samples[10] = {0};
 uint8_t position = 0;
-bool refresh = false;
-uint32_t zero = 0, noise = 0;
 
-#define SAMPLES 10
+int32_t zero = 0, db = 0, noise = 0, noise_avrg = 0, noise_filter = 5;
+
+#define MIC_OFFSET_DB 6
 
 void setup() {
   Serial.begin(250000);
@@ -26,13 +29,8 @@ void setup() {
 void loop() {
 
   mic_sample = analogRead(Mic_Pin);
-  /*
-  Serial.print(0);
-  Serial.print(',');
-  Serial.print(4100);
-  Serial.print(',');
-  Serial.println(mic_sample);
-*/
+  //Serial.print(','); Serial.print(mic_sample);
+
   samples[position] = mic_sample;
   position++;
   if (position >= SAMPLES) {
@@ -51,15 +49,24 @@ void loop() {
     }
     noise /= SAMPLES;
     noise = sqrt(noise);
+    //Serial.print(','); Serial.print(noise);
+    noise *= 100;
 
-    Serial.print(0);
-    Serial.print(',');
-    Serial.print(4100);
-    Serial.print(',');
-    Serial.print(zero);
-    Serial.print(',');
-    Serial.println(noise);
+    //noise_avrg = (noise_filter * noise + (100 - noise_filter) * noise_avrg)/100;
+    //Serial.print(','); Serial.print(noise_avrg);
+
+    db = (20 / 2) * log10(noise) + MIC_OFFSET_DB;
+    Serial.print(','); Serial.print(db);
+    //noise_avrg = (noise_filter * db + (100 - noise_filter) * noise_avrg) / 100;
+    //Serial.print(','); Serial.print(noise_avrg);
+
+    //if(db > MIC_OVERLOAD_DB)
+
   }
+
+  // Debug code
+
+  Serial.println(",0,100,;");
 
   if (debug == 0) {
     digitalWrite(Debug_Pin, HIGH);
