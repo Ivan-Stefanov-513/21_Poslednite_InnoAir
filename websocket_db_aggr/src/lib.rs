@@ -5,16 +5,21 @@ use std::fs::File;
 use std::io::{Read};
 use native_tls::{Identity, TlsAcceptor, TlsStream};
 use std::net::{TcpListener, TcpStream};
-use tungstenite::server;
+use tungstenite::{server, Message};
 use tungstenite::protocol::WebSocket;
 use thiserror::Error;
 use mysql::PooledConn;
 use std::sync::Arc;
+use std::convert::TryFrom;
+use byteorder::{ByteOrder, LittleEndian};
+use mysql::chrono::ParseResult;
 
 const WEBSOCKET_BIND: &str = "10.21.42.2:1234";
 const DATABASE_ACCESS: &str = "mysql://poslednite:drenki_gl0g@localhost:3306/poslednite";
 const CERT_FILENAME: &str = "Poslednite_21.pkcs12";
 const CERT_PASS: &str = "drenki_gl0g";
+
+const MESSAGE_T_SIZE: u8 = 7;
 
 pub struct Config;
 
@@ -27,6 +32,7 @@ impl Config
 	}
 }
 
+// This thing might not be needed after all
 #[derive(Error, Debug)]
 pub enum RuntimeError
 {
@@ -34,6 +40,55 @@ pub enum RuntimeError
 	WebsocketBindError,
 	#[error("unknown error")]
 	UnknownError,
+}
+
+pub enum SensorMessageData
+{
+	Humidity(uint32_t),
+	Temperature(int32_t),
+	Pressure(uint32_t),
+	Noise(uint32_t),
+	Dust(uint32_t),
+	AirQuality(uint32_t),
+	CO2(uint32_t)
+}
+
+pub struct SensorMessage
+{
+	data_and_type: SensorMessageData,
+	station_id: u16
+}
+
+impl TryFrom<&[u8]> for SensorMessage
+{
+	type Error = String;
+
+	fn try_from(input: &[u8]) -> Result<Self, Self::Error>
+	{
+		if input.len() == MESSAGE_T_SIZE
+		{
+			Ok(SensorMessage
+			{
+				data_and_type: match input[0]
+				{
+					1 => SensorMessageData::Humidity(LittleEndian::read_u32(&input[1..5])),
+					2 => SensorMessageData::Temperature(LittleEndian::read_i32(&input[1..5])),
+					3 => SensorMessageData::Pressure(LittleEndian::read_u32(&input[1..5])),
+					4 => SensorMessageData::Noise(LittleEndian::read_u32(&input[1..5])),
+					5 => SensorMessageData::Dust(LittleEndian::read_u32(&input[1..5])),
+					6 => SensorMessageData::AirQuality(LittleEndian::read_u32(&input[1..5])),
+					7 => SensorMessageData::CO2(LittleEndian::read_u32(&input[1..5])),
+					_ => return Err(String::from("invalid message type! Received {}, expected a value between 1 and 7 inclusive.", input[0]))
+				},
+				station_id: LittleEndian::read_u16(&input[5..7])
+			})
+		}
+		else
+		{
+			Err(format!("incorrect size of input when converting from Vec<u8> to SensorMessage! Espected {}, provided {}.",
+			            MESSAGE_T_SIZE, input.len()))
+		}
+	}
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>>
@@ -77,7 +132,19 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>
 
 pub fn handle_client(mut client_socket: WebSocket<TlsStream<TcpStream>>, mut db_conn: PooledConn) -> Result<(), Box<dyn Error>>
 {
-	println!("DEI, RABOTI!");
+	//println!("DEI, RABOTI!");
 	db_conn.query("INSERT INTO stations (name, location) VALUES ('test', 'here')")?;
+
+	let msg = client_socket.read_message()?;
+	match msg
+	{
+		Message::Binary(msg_data) =>
+		{
+			let decoded_msg = SensorMessage::try_from(&msg_data[..])?;
+			
+		},
+		_ => ()
+	}
+
 	Ok(())
 }

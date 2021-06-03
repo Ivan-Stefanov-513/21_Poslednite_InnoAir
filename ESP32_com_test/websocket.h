@@ -5,13 +5,13 @@
 
 typedef enum __attribute__((__packed__))
 {
-	humidity,
-	temperature,
-	pressure,
-	noise,
-	dust,
-	air_quality,
-	co2
+	humidity	= 1,
+	temperature	= 2,
+	pressure	= 3,
+	noise		= 4,
+	dust		= 5,
+	air_quality	= 6,
+	co2			= 7
 }
 message_type_t;
 
