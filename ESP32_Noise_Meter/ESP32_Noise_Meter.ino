@@ -1,6 +1,3 @@
-#define Debug_Pin 23
-uint8_t debug = 0;
-
 #define Mic_Pin 35
 #define SAMPLES 10
 
@@ -10,9 +7,10 @@ uint16_t mic_sample = 0;
 uint16_t samples[10] = {0};
 uint8_t position = 0;
 
-int32_t zero = 0, db = 0, noise = 0, noise_avrg = 0, noise_filter = 5;
+uint32_t zero = 0, db = 0, noise = 0, noise_avrg = 0;
 
 #define MIC_OFFSET_DB 6
+#define MIC_OVERLOAD_DB 120
 
 void setup() {
   Serial.begin(250000);
@@ -21,9 +19,7 @@ void setup() {
   analogSetWidth(12);
   analogSetAttenuation(ADC_0db);
   analogSetClockDiv(1);
-
-  pinMode(Debug_Pin, OUTPUT);
-  digitalWrite(Debug_Pin, LOW);
+  delay(100);
 }
 
 void loop() {
@@ -52,28 +48,15 @@ void loop() {
     //Serial.print(','); Serial.print(noise);
     noise *= 100;
 
-    //noise_avrg = (noise_filter * noise + (100 - noise_filter) * noise_avrg)/100;
-    //Serial.print(','); Serial.print(noise_avrg);
-
     db = (20 / 2) * log10(noise) + MIC_OFFSET_DB;
     Serial.print(','); Serial.print(db);
-    //noise_avrg = (noise_filter * db + (100 - noise_filter) * noise_avrg) / 100;
-    //Serial.print(','); Serial.print(noise_avrg);
 
-    //if(db > MIC_OVERLOAD_DB)
+    if (db > MIC_OVERLOAD_DB) {
+      db = MIC_OVERLOAD_DB;
+      //Serial.println("Mic Overloaded!");
+    }
 
   }
 
-  // Debug code
-
-  Serial.println(",0,100,;");
-
-  if (debug == 0) {
-    digitalWrite(Debug_Pin, HIGH);
-    debug = 1;
-  }
-  else {
-    digitalWrite(Debug_Pin, LOW);
-    debug = 0;
-  }
+  Serial.println(",0,120,;");
 }
