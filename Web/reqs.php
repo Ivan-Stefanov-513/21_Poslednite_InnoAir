@@ -6,7 +6,7 @@ if (!$link)
     echo "<h2>MySQL Error!</h2>";   
     exit;
 }
- 
+// $_GET["ID"]
 // Switch to a different database:
 $db="poslednite";
 mysqli_select_db($link, $db);
@@ -14,7 +14,7 @@ mysqli_select_db($link, $db);
 echo "<table border=\"1\" width=\"100%\" bgcolor=\"#FFFFE1\">";
 echo "<tr><td>Value1</td><td>Value2</td><td>Value3</td>";
 // SQL-request:
-$q = mysqli_query ($link, "SELECT * FROM `temperature` ");
+$q = mysqli_query ($link, "SELECT * FROM `temperature` WHERE `station_id` =  $_GET['ID']");
 // table-result output
 for ($c=0; $c<mysqli_num_rows($q); $c++)
 {
