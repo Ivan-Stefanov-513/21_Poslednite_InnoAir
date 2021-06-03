@@ -12,7 +12,6 @@ use mysql::PooledConn;
 use std::sync::Arc;
 use std::convert::TryFrom;
 use byteorder::{ByteOrder, LittleEndian};
-use mysql::chrono::ParseResult;
 
 const WEBSOCKET_BIND: &str = "10.21.42.2:443";
 const DATABASE_ACCESS: &str = "mysql://poslednite:drenki_gl0g@localhost:3306/poslednite";
@@ -114,9 +113,9 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>
 			let acceptor_clone = acceptor.clone();
 			if let Ok(client_stream) = acceptor_clone.accept(client_stream)
 			{
-				if let Ok(mut client_socket) = server::accept(client_stream)
+				if let Ok(client_socket) = server::accept(client_stream)
 				{
-					let mut db_conn = pool.get_conn()?;
+					let db_conn = pool.get_conn()?;
 					thread_pool.execute(move ||
 					{
 						// TODO: Handle errors, possibly by sending result to the main thread?
@@ -132,7 +131,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>
 
 pub fn handle_client(mut client_socket: WebSocket<TlsStream<TcpStream>>, mut db_conn: PooledConn) -> Result<(), Box<dyn Error>>
 {
-	println!("DEI, RABOTI!");
+	//println!("DEI, RABOTI!");
 	//db_conn.query("INSERT INTO stations (name, location) VALUES ('test', 'here')")?;
 
 	let msg = client_socket.read_message()?;

@@ -93,7 +93,8 @@ bool websocket_init(void)
 
 	client.onMessage(onMessageCallback);
 	client.onEvent(onEventsCallback);
-	// TODO: figure out why this causes a 'bad certificate' error
+	// TODO: get a signed certificate and the corresponding CA certificate
+	// In the meantime, don't verify the server certificate
 	//client.setCACert(echo_org_ssl_ca_cert);
 	client.setInsecure();
 	connected = client.connect(websockets_connection_string);
