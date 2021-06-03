@@ -7,18 +7,23 @@ typedef enum __attribute__((__packed__))
 {
 	humidity,
 	temperature,
+	pressure,
 	noise,
-	dust
+	dust,
+	air_quality,
+	co2
 }
 message_type_t;
 
-// TODO: figure out the correct types
 typedef union
 {
-	uint16_t humidity;
-	uint16_t temperature;
-	float noise;
+	uint32_t humidity;
+	int32_t temperature;
+	uint32_t pressure;
+	uint32_t noise;
 	uint32_t dust;
+	uint32_t air_quality;
+	uint32_t co2;
 }
 message_data_t;
 
