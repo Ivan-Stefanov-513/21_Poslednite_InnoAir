@@ -1,0 +1,6 @@
+Server:
+sudo websocat -E -t --pkcs12-der Poslednite_21.pkcs12 --pkcs12-passwd drenki_gl0g wss-listen:10.21.42.2:443 -
+
+Client:
+websocat --ws-c-uri=wss://10.21.42.2/ -t - ws-c:cmd:'socat - ssl:10.21.42.2:443,verify=0'
+
