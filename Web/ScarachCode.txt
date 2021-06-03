@@ -1,0 +1,12 @@
+Scarach code
+
+ <div id="TempContainer" class="GrafCont">
+    <div class="GraffIfarme" >
+      <iframe src="file:///home/georgi/21_Poslednite_InnoAir/Web/TestCharting.html"></iframe>
+    </div>
+    <div class="Trends">
+      
+      The trend is going UP &#8599;
+
+    </div>
+  </div>
