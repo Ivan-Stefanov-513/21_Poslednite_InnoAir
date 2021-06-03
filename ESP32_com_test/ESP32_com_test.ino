@@ -23,7 +23,10 @@ void loop(void)
 
 void test(void)
 {
-	char message[] = "kurcheee";
+	message_t message;
+	message.message_type = temperature;
+	message.message_data.temperature = 27;
+	message.station_id = 69;	// Nice
 
-	websocket_send((message_t *) message);
+	websocket_send(&message);
 }

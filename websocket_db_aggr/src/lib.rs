@@ -14,12 +14,12 @@ use std::convert::TryFrom;
 use byteorder::{ByteOrder, LittleEndian};
 use mysql::chrono::ParseResult;
 
-const WEBSOCKET_BIND: &str = "10.21.42.2:1234";
+const WEBSOCKET_BIND: &str = "10.21.42.2:443";
 const DATABASE_ACCESS: &str = "mysql://poslednite:drenki_gl0g@localhost:3306/poslednite";
-const CERT_FILENAME: &str = "Poslednite_21.pkcs12";
+const CERT_FILENAME: &str = "/home/cartogan/Programs/21_Poslednite_InnoAir/websocket_db_aggr/Poslednite_21.pkcs12";
 const CERT_PASS: &str = "drenki_gl0g";
 
-const MESSAGE_T_SIZE: u8 = 7;
+const MESSAGE_T_SIZE: usize = 7;
 
 pub struct Config;
 
@@ -44,13 +44,13 @@ pub enum RuntimeError
 
 pub enum SensorMessageData
 {
-	Humidity(uint32_t),
-	Temperature(int32_t),
-	Pressure(uint32_t),
-	Noise(uint32_t),
-	Dust(uint32_t),
-	AirQuality(uint32_t),
-	CO2(uint32_t)
+	Humidity(u32),
+	Temperature(i32),
+	Pressure(u32),
+	Noise(u32),
+	Dust(u32),
+	AirQuality(u32),
+	CO2(u32)
 }
 
 pub struct SensorMessage
@@ -78,7 +78,7 @@ impl TryFrom<&[u8]> for SensorMessage
 					5 => SensorMessageData::Dust(LittleEndian::read_u32(&input[1..5])),
 					6 => SensorMessageData::AirQuality(LittleEndian::read_u32(&input[1..5])),
 					7 => SensorMessageData::CO2(LittleEndian::read_u32(&input[1..5])),
-					_ => return Err(String::from("invalid message type! Received {}, expected a value between 1 and 7 inclusive.", input[0]))
+					_ => return Err(format!("invalid message type! Received {}, expected a value between 1 and 7 inclusive.", input[0]))
 				},
 				station_id: LittleEndian::read_u16(&input[5..7])
 			})
@@ -132,8 +132,8 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>
 
 pub fn handle_client(mut client_socket: WebSocket<TlsStream<TcpStream>>, mut db_conn: PooledConn) -> Result<(), Box<dyn Error>>
 {
-	//println!("DEI, RABOTI!");
-	db_conn.query("INSERT INTO stations (name, location) VALUES ('test', 'here')")?;
+	println!("DEI, RABOTI!");
+	//db_conn.query("INSERT INTO stations (name, location) VALUES ('test', 'here')")?;
 
 	let msg = client_socket.read_message()?;
 	match msg
@@ -141,7 +141,37 @@ pub fn handle_client(mut client_socket: WebSocket<TlsStream<TcpStream>>, mut db_
 		Message::Binary(msg_data) =>
 		{
 			let decoded_msg = SensorMessage::try_from(&msg_data[..])?;
-			
+			match decoded_msg.data_and_type
+			{
+				SensorMessageData::Humidity(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO humidity (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+				SensorMessageData::Temperature(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO temperature (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+				SensorMessageData::Pressure(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO pressure (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+				SensorMessageData::Noise(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO noise (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+				SensorMessageData::Dust(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO dust (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+				SensorMessageData::AirQuality(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO air_quality (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+				SensorMessageData::CO2(value) =>
+				{
+					db_conn.prep_exec("INSERT INTO co2 (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+				},
+			}
 		},
 		_ => ()
 	}
