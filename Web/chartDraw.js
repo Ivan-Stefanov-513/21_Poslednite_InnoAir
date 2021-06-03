@@ -24,16 +24,16 @@ function addBar(config, backColor, xMIN,xMAX,yMIN,yMAX)
 		}
 		);
 	}
-	if (!config.hasOwnProperty("boxIndex")) 
+	if (!config.hasOwnProperty("AnoIndex")) 
 	{
-		config.boxIndex=0;
+		config.AnoIndex=0;
 	}
 	else 
 	{
-		config.boxIndex++;
+		config.AnoIndex++;
 	}
 // config.options.plugins.annotation.annotations.box3=[];
-config.options.plugins.annotation.annotations[config.boxIndex]=		 
+config.options.plugins.annotation.annotations[config.AnoIndex]=		 
 {
 	drawTime: 'beforeDatasetsDraw',
 	type: 'box',
@@ -85,6 +85,13 @@ function drawLineGraf(ctx) {
 	    		{
 	    			annotations: 
 	    			{		
+	    				 line1: {
+				          type: 'line',
+				          yMin: 60,
+				          yMax: 60,
+				          borderColor: 'rgb(255, 99, 132)',
+				          borderWidth: 2,
+        					}
 	    			}
 
 	    		}
