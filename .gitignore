@@ -1,4 +1,7 @@
+websocket_db_aggr/target/
 secure.h
 *.bin
 *.elf
 *.o
+*.rlib
+*.d
