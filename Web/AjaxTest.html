@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Page Title</title>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+
+  <script src="./node_modules/chart.js/dist/chart.min.js"></script>
+  <script src="./node_modules/chartjs-plugin-annotation/dist/chartjs-plugin-annotation.min.js"></script>
+  <script src="./chartDraw.js"></script>
+
+  <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js'></script> -->
+  <!-- <script src='https://codepen.io/k3no/pen/PGXXxQ.js'></script> -->
+
+</body>
+
+</head>
+<body>
+
+<!-- <h1>My First Heading</h1>
+<p>My first paragraph.</p>
+-->
+<div width=1400% height=100% >
+  <canvas id="myChart" ></canvas>
+
+</div>
+
+<div id="txtHint"></div>>
+
+<script >
+
+  function testASYNC()
+  {
+    if (this.readyState == 4 && this.status == 200) 
+    {
+      //  document.getElementById("txtHint").innerHTML = this.responseText;  
+      var a=this.responseText;
+      b=a.split('|');
+        // testArray = JSON.parse(b[0]);
+        console.log('test'); 
+        console.log(JSON.parse(b[1]));
+        drawLineGraf (ctx,JSON.parse(b[1]),JSON.parse(b[0])); 
+      }
+
+      //alert(this.responseText);
+      //return this.responseText;
+    };
+
+    function showCustomer(str) {
+      var xhttp;    
+      if (str == "") {
+    // document.getElementById("txtHint").innerHTML = "";
+    return;
+  }
+  xhttp = new XMLHttpRequest();
+  xhttp.onload = testASYNC;
+  //edit here
+
+  xhttp.open("GET", "reqs.php?ID=73&TABLE=co2", false);
+
+  // xhttp.open("GET", "reqs.php?ID=666&TABLE=temperature", false);
+  xhttp.send();
+
+
+}
+
+
+
+function drawLineGraf(ctx, labels, datapoints) {
+  //alert("test");
+  // const DATA_COUNT = 15;
+  // const labels = [];
+  // for (let i = 0; i < DATA_COUNT; ++i) {
+  //   labels.push(i.toString());
+  // }
+  // const datapoints = [-10, 20, 20, 60, 80, 120, 140, 180, 120, 125, 105, 110, 170, -10];
+  const data = {
+    labels: labels,
+    datasets: [
+    {
+      label: 'Cubic interpolation (monotone)',
+      data: datapoints,
+      borderColor: 'rgba(255, 0, 0, 1)',
+      fill: false,
+      cubicInterpolationMode: 'monotone',
+      tension: 0.1
+    }
+    ]
+  };
+
+  config = 
+  {
+    type: 'line',
+    data: data,
+    options: 
+    {
+      plugins: 
+      {
+        autocolors: false,
+        annotation: 
+        {
+          annotations: 
+          {   
+
+          }
+
+        }
+      }
+    }
+  };
+// addBar(config,'rgba(2, 14, 132, 0.25)'   ,1,3,70,140);
+// addBar(config,'rgba(255, 255, 0, 0.5)'   ,2,3,70,90);
+// addBar(config,'rgba(128, 99, 132, 0.25)' ,1,2,50,70);
+
+// addXLine(config,'rgb(255, 99, 132)', 2,90,90);
+
+var myChart = new Chart(ctx, config);
+
+return myChart;
+}
+
+//alert("Hello! I am an alert box!");
+var ctx = document.getElementById('myChart').getContext('2d');
+
+
+
+
+test1=showCustomer();
+ // alert(test1);
+
+</script>
+
+
+</body>
+</html>
