@@ -1,4 +1,11 @@
+#include "websocket.h"
 #include "Noise.h"
+
+message_t noise_data;
+
+unsigned long previousMillis = 0;
+unsigned long currentMillis = 0;
+const long interval = 5000;
 
 void setup() {
   Serial.begin(250000);
@@ -8,11 +15,27 @@ void setup() {
   analogSetAttenuation(ADC_0db);
   analogSetClockDiv(1);
   delay(100);
+
+  wifi_init();
+  websocket_init();
 }
 
 void loop() {
-  Serial.print(noise_measure());
-  Serial.println(",0,120,");
+  uint32_t spl = noise_measure();
+  //Serial.print(spl);  Serial.println(",0,120,");
+  
+  currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    
+    Serial.println("Send :)");
+
+    noise_data.message_type = noise;
+    noise_data.message_data.noise = 123;//spl;
+    noise_data.station_id = 73;  // Nice
+
+    websocket_send(&noise_data);
+  }
 }
 
 uint32_t noise_measure(void) {
@@ -31,16 +54,16 @@ uint32_t noise_measure(void) {
   zero /= SAMPLES;
 
   // Calculate AC RMS - noise level
-  noise = 0;
+  noisei = 0;
   for (uint8_t i = 0 ; i < SAMPLES ; i++) {
-    noise += sq(mic_sample[i] - zero);
+    noisei += sq(mic_sample[i] - zero);
   }
-  noise /= SAMPLES;
-  noise = sqrt(noise);
+  noisei /= SAMPLES;
+  noisei = sqrt(noise);
 
   // Calculate SPL - dB
-  noise *= 100;
-  db = (20 / 2) * log10(noise) + MIC_OFFSET_DB;
+  noisei *= 100;
+  db = (20 / 2) * log10(noisei) + MIC_OFFSET_DB;
 
   // Microphone and preamp clipping limit
   if (db > MIC_OVERLOAD_DB) {
