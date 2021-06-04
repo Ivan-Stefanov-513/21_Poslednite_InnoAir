@@ -18,6 +18,8 @@ const long interval = 1000;
 
 void setup() {
   Serial.begin(250000);
+  Serial.println();
+  Serial.println("Noise and CO2 Meter");
   pinMode(Mic_Pin, ANALOG);
   analogReadResolution(12);
   analogSetWidth(12);
@@ -27,7 +29,7 @@ void setup() {
   delay(100);
 
   wifi_init();
-  //websocket_init();
+  websocket_init();
 }
 
 void loop() {
