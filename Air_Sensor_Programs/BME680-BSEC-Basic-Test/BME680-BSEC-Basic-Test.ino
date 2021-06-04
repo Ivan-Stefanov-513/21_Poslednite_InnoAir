@@ -19,8 +19,8 @@ void setup(void)
   Serial.println("\nBME680 BSEC Test");   // Test line
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
 
-  //iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
-  iaqSensor.begin(BME680_I2C_ADDR_SECONDARY, Wire);
+  iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
+  //iaqSensor.begin(BME680_I2C_ADDR_SECONDARY, Wire);
   output = "\nBSEC library version " + String(iaqSensor.version.major) + "." + String(iaqSensor.version.minor) + "." + String(iaqSensor.version.major_bugfix) + "." + String(iaqSensor.version.minor_bugfix);
   Serial.println(output);
   checkIaqSensorStatus();
