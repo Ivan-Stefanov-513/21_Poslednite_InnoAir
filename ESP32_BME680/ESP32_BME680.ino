@@ -95,6 +95,8 @@ void loop(void)
 	message.message_type = air_quality;
 	message.message_data.air_quality = iaqSensor.iaq;
 	websocket_send(&message);
+
+	delay(10000);
 }
 
 // Helper function definitions
