@@ -136,6 +136,8 @@ pub fn handle_client(mut client_socket: WebSocket<TlsStream<TcpStream>>, mut db_
 	//db_conn.query("INSERT INTO stations (name, location) VALUES ('test', 'here')")?;
 
 	let msg = client_socket.read_message()?;
+	client_socket.close(None);
+	client_socket.write_pending()?;
 	match msg
 	{
 		Message::Binary(msg_data) =>
