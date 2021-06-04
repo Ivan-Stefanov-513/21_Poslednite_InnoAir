@@ -12,6 +12,7 @@ use mysql::PooledConn;
 use std::sync::Arc;
 use std::convert::TryFrom;
 use byteorder::{ByteOrder, LittleEndian};
+use mysql::prelude::*;
 
 const WEBSOCKET_BIND: &str = "10.21.42.2:443";
 const DATABASE_ACCESS: &str = "mysql://poslednite:drenki_gl0g@localhost:3306/poslednite";
@@ -144,31 +145,31 @@ pub fn handle_client(mut client_socket: WebSocket<TlsStream<TcpStream>>, mut db_
 			{
 				SensorMessageData::Humidity(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO humidity (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO humidity (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 				SensorMessageData::Temperature(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO temperature (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO temperature (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 				SensorMessageData::Pressure(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO pressure (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO pressure (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 				SensorMessageData::Noise(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO noise (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO noise (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 				SensorMessageData::Dust(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO dust (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO dust (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 				SensorMessageData::AirQuality(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO air_quality (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO air_quality (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 				SensorMessageData::CO2(value) =>
 				{
-					db_conn.prep_exec("INSERT INTO co2 (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
+					let res:Vec<String> = db_conn.exec("INSERT INTO co2 (station_id, value) VALUES (?, ?)", (decoded_msg.station_id, value))?;
 				},
 			}
 		},

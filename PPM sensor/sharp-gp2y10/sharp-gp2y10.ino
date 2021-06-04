@@ -1,60 +1,56 @@
 // Developed on Arduino Uno
+#include "gp2y10.h"
 
-// ========== HAL ========== //
-#define PIN_LED   2
-#define PIN_PPM   A0
 
-//Time parameters in uS
 
-#define TIME_HIGH     320
-#define TIME_TOSAMPLE 280
-#define TIME_PERIOD   10000  
+  
 
 unsigned long start = 0;
 
-void Sharp_gp2y10_init()  {
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, LOW);
-  pinMode(PIN_PPM, INPUT);
-}
+
 
 // Readings to average
 // Maximum is 20
-unsigned int getAverageReadings(int count) {
+float getReading() {
   
-  unsigned int readings[25];
-  unsigned long average = 0;
+  unsigned int readings[105];
+  unsigned long last = 0;
+  int count = 1;
   
   noInterrupts();
   count += 5; // Add 5 more, just to make sure the filter is set up properly
   
+  
   for(int i = 0; i < count; i++) {
 
     // Turn sensor on
-    digitalWrite(PIN_LED, HIGH);
+    digitalWrite(PIN_LED, PPM_LED_ON);
     start = micros();
     
     // Wait, until we are on time to read
     for(;start+TIME_TOSAMPLE > micros();); 
     //Read sensor data
-    readings[i] = analogRead(PIN_PPM); 
+    last = analogRead( PIN_PPM );  
     for(;start+TIME_HIGH > micros(););
-    digitalWrite(PIN_LED, LOW);
-    if(i >= 5)
-      average += readings[i];
+    digitalWrite(PIN_LED, PPM_LED_OFF);
     for(;start+TIME_PERIOD > micros(););
   }
 
   // Finally - enable interrupts and return averaged value
   interrupts();
-  return average / (count - 5);
+  
+  return last * 0.8058;
 }
 
 void setup() {
   Sharp_gp2y10_init();
+  Serial.begin(9600);
+  
 }
 
 void loop() {
+  float milivolts = getReading();
+  int filtered = milivolts*100;
   
-
+  Serial.println(milivolts);
 }

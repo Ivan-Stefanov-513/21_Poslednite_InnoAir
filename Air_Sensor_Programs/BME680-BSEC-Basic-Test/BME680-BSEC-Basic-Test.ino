@@ -19,8 +19,8 @@ void setup(void)
   Serial.println("\nBME680 BSEC Test");   // Test line
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
 
-  //iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
-  iaqSensor.begin(BME680_I2C_ADDR_SECONDARY, Wire);
+  iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
+  //iaqSensor.begin(BME680_I2C_ADDR_SECONDARY, Wire);
   output = "\nBSEC library version " + String(iaqSensor.version.major) + "." + String(iaqSensor.version.minor) + "." + String(iaqSensor.version.major_bugfix) + "." + String(iaqSensor.version.minor_bugfix);
   Serial.println(output);
   checkIaqSensorStatus();
@@ -76,8 +76,8 @@ void checkIaqSensorStatus(void)
     if (iaqSensor.status < BSEC_OK) {
       output = "BSEC error code : " + String(iaqSensor.status);
       Serial.println(output);
-      for (;;)
-        errLeds(); /* Halt in case of failure */
+      for (;;);
+        //errLeds(); /* Halt in case of failure */
     } else {
       output = "BSEC warning code : " + String(iaqSensor.status);
       Serial.println(output);
@@ -88,8 +88,8 @@ void checkIaqSensorStatus(void)
     if (iaqSensor.bme680Status < BME680_OK) {
       output = "BME680 error code : " + String(iaqSensor.bme680Status);
       Serial.println(output);
-      for (;;)
-        errLeds(); /* Halt in case of failure */
+      for (;;);
+        //errLeds(); /* Halt in case of failure */
     } else {
       output = "BME680 warning code : " + String(iaqSensor.bme680Status);
       Serial.println(output);
@@ -97,6 +97,7 @@ void checkIaqSensorStatus(void)
   }
 }
 
+/*
 void errLeds(void)
 {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -105,3 +106,4 @@ void errLeds(void)
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
 }
+*/

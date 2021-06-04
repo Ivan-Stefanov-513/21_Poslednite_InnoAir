@@ -1,0 +1,8 @@
+Sensor = ESP32
+VIN = 5V
+3Vo = to CS
+GND = GND
+SCK = SCL
+SDI = SDA
+SDO = GND (Address 0x76)
+CS = 3Vo

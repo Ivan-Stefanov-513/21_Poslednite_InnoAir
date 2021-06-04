@@ -12,6 +12,7 @@ byte readCO2[] = {0xFE, 0X44, 0X00, 0X08, 0X02, 0X9F, 0X25}; //Command packet to
 byte response[] = {0, 0, 0, 0, 0, 0, 0}; //create an array to store the response
 //multiplier for value. default is 1. set to 3 for K-30 3% and 10 for K-33 ICB
 int valMultiplier = 1;
+
 void setup()
 {
   // put your setup code here, to run once:
