@@ -1,33 +1,38 @@
-// AN-126 Demo of K-30 using Software Serial
+#include "websocket.h"
+message_t co2_data;
+
 #include <SoftwareSerial.h>
-/*
-  Basic Arduino example for K-Series sensor
-  Created by Jason Berger
-  Co2meter.com
-*/
-#include "SoftwareSerial.h"
-SoftwareSerial K_30_Serial(5, 4); //Sets up a virtual serial port
-//Using pin 5 for Rx and pin 4 for Tx
+SoftwareSerial K_30_Serial(18, 19); //Sets up a virtual serial port
+//Using pin 18 for Rx and pin 19 for Tx
 byte readCO2[] = {0xFE, 0X44, 0X00, 0X08, 0X02, 0X9F, 0X25}; //Command packet to read Co2 (see app note)
 byte response[] = {0, 0, 0, 0, 0, 0, 0}; //create an array to store the response
 //multiplier for value. default is 1. set to 3 for K-30 3% and 10 for K-33 ICB
 int valMultiplier = 1;
 
-void setup()
-{
-  // put your setup code here, to run once:
-  Serial.begin(115200); //Opens the main serial port to communicate with the computer
-  K_30_Serial.begin(9600); //Opens the virtual serial port with a baud of 9600
-  Serial.println(" Demo of AN-126 Software Serial and K-30 Sensor");
+void setup() {
+  Serial.begin(250000);
+  K_30_Serial.begin(9600);
+
+  wifi_init();
+  websocket_init();
 }
-void loop()
-{
+
+void loop() {
+  // put your main code here, to run repeatedly:
   sendRequest(readCO2);
   unsigned long valCO2 = getValue(response);
-  Serial.print("Co2 ppm = ");
+  Serial.print("CO2 ppm = ");
   Serial.println(valCO2);
+
+  co2_data.message_type = co2;
+  co2_data.message_data.co2 = (uint32_t)valCO2;
+  co2_data.station_id = 73;
+
+  websocket_send(&co2_data);
+  
   delay(2000);
 }
+
 void sendRequest(byte packet[])
 {
   while (!K_30_Serial.available()) //keep sending request until we start to get a response
@@ -54,6 +59,7 @@ void sendRequest(byte packet[])
     response[i] = K_30_Serial.read();
   }
 }
+
 unsigned long getValue(byte packet[])
 {
   int high = packet[3]; //high byte for value is 4th byte in packet in the packet
