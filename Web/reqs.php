@@ -22,7 +22,7 @@ $TABLE=$_GET['TABLE'];
 $db="poslednite";
 mysqli_select_db($link, $db);
 
-$q = mysqli_query ($link, "SELECT * FROM `$TABLE` WHERE `station_id` = $ID ");
+$q = mysqli_query ($link, "SELECT * FROM `$TABLE` WHERE `station_id` = $ID  LIMIT 2000");
 // table-result output
 $time ="[";
 $nums ="[";

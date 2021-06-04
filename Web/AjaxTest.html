@@ -37,22 +37,19 @@
       //  document.getElementById("txtHint").innerHTML = this.responseText;  
       var a=this.responseText;
       b=a.split('|');
-        // testArray = JSON.parse(b[0]);
-        console.log('test'); 
-        console.log(JSON.parse(b[1]));
-        drawLineGraf (ctx,JSON.parse(b[1]),JSON.parse(b[0])); 
-      }
+      // testArray = JSON.parse(b[0]);
+      console.log('test'); 
+      console.log(JSON.parse(b[1]));
+      drawLineGraf (ctx,JSON.parse(b[1]),JSON.parse(b[0])); 
+    }
 
       //alert(this.responseText);
       //return this.responseText;
     };
 
-    function showCustomer(str) {
+    function GetDataFromMysql(str) {
       var xhttp;    
-      if (str == "") {
-    // document.getElementById("txtHint").innerHTML = "";
-    return;
-  }
+    
   xhttp = new XMLHttpRequest();
   xhttp.onload = testASYNC;
   //edit here
@@ -126,7 +123,7 @@ var ctx = document.getElementById('myChart').getContext('2d');
 
 
 
-test1=showCustomer();
+test1=GetDataFromMysql();
  // alert(test1);
 
 </script>
