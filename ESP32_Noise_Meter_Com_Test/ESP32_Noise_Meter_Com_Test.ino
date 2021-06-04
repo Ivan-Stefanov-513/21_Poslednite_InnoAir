@@ -23,16 +23,16 @@ void setup() {
 void loop() {
   uint32_t spl = noise_measure();
   //Serial.print(spl);  Serial.println(",0,120,");
-  
+
   currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
-    
+
     Serial.println("Send :)");
 
     noise_data.message_type = noise;
-    noise_data.message_data.noise = 123;//spl;
-    noise_data.station_id = 73;  // Nice
+    noise_data.message_data.noise = spl;
+    noise_data.station_id = 73;
 
     websocket_send(&noise_data);
   }
