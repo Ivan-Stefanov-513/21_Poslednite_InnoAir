@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>Page Title</title>
+  <title>Measurements</title>
 
   <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
@@ -21,6 +21,20 @@
 <!-- <h1>My First Heading</h1>
 <p>My first paragraph.</p>
 -->
+<!-- 
+<form action="/action_page.php">
+  <label for="cars">Choose a car:</label>
+  <select name="cars" id="cars">
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <option value="opel">Opel</option>
+    <option value="audi">Audi</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Submit">
+</form> -->
+
+
 <div width=1400% height=100% >
   <canvas id="myChart" ></canvas>
 
@@ -43,8 +57,6 @@
       drawLineGraf (ctx,JSON.parse(b[1]),JSON.parse(b[0])); 
     }
 
-      //alert(this.responseText);
-      //return this.responseText;
     };
 
     function GetDataFromMysql(str) {
@@ -54,7 +66,7 @@
   xhttp.onload = testASYNC;
   //edit here
 
-  xhttp.open("GET", "reqs.php?ID=73&TABLE=co2", false);
+  xhttp.open("GET", "reqs.php?ID=73&TABLE=noise", false);
 
   // xhttp.open("GET", "reqs.php?ID=666&TABLE=temperature", false);
   xhttp.send();
@@ -76,9 +88,9 @@ function drawLineGraf(ctx, labels, datapoints) {
     labels: labels,
     datasets: [
     {
-      label: 'Cubic interpolation (monotone)',
+      label: 'Sound polution',
       data: datapoints,
-      borderColor: 'rgba(255, 0, 0, 1)',
+      borderColor: 'rgba(15, 15, 15, 1)',
       fill: false,
       cubicInterpolationMode: 'monotone',
       tension: 0.1
@@ -110,7 +122,12 @@ function drawLineGraf(ctx, labels, datapoints) {
 // addBar(config,'rgba(255, 255, 0, 0.5)'   ,2,3,70,90);
 // addBar(config,'rgba(128, 99, 132, 0.25)' ,1,2,50,70);
 
-// addXLine(config,'rgb(255, 99, 132)', 2,90,90);
+// addXLine(config,'rgb(255, 0, 0)', 4,100000,100000);
+
+addXLine(config,'rgb(255, 0, 0)', 4,30,30);
+addXLine(config,'rgb(255, 0, 0)', 4,60,60);
+addXLine(config,'rgb(255, 0, 0)', 4,100,100);
+
 
 var myChart = new Chart(ctx, config);
 
