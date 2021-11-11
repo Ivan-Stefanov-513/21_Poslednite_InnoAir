@@ -1,6 +1,7 @@
+/*
 #include "websocket.h"
 message_t co2_data;
-
+*/
 #include <SoftwareSerial.h>
 SoftwareSerial K_30_Serial(18, 19); //Sets up a virtual serial port
 //Using pin 18 for Rx and pin 19 for Tx
@@ -10,11 +11,11 @@ byte response[] = {0, 0, 0, 0, 0, 0, 0}; //create an array to store the response
 int valMultiplier = 1;
 
 void setup() {
-  Serial.begin(250000);
+  Serial.begin(9600);
   K_30_Serial.begin(9600);
 
-  wifi_init();
-  websocket_init();
+  //wifi_init();
+  //websocket_init();
 }
 
 void loop() {
@@ -23,13 +24,13 @@ void loop() {
   unsigned long valCO2 = getValue(response);
   Serial.print("CO2 ppm = ");
   Serial.println(valCO2);
+  /*
+    co2_data.message_type = co2;
+    co2_data.message_data.co2 = (uint32_t)valCO2;
+    co2_data.station_id = 73;
 
-  co2_data.message_type = co2;
-  co2_data.message_data.co2 = (uint32_t)valCO2;
-  co2_data.station_id = 73;
-
-  websocket_send(&co2_data);
-  
+    websocket_send(&co2_data);
+  */
   delay(2000);
 }
 
